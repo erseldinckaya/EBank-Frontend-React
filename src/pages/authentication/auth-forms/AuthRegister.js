@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import {toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 // material-ui
 import {
@@ -52,27 +54,93 @@ const AuthRegister = () => {
         changePassword('');
     }, []);
 
+    const [inputs, setInputs] = useState({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        address: "",
+        mail: "",
+        username: "",
+        password: "",
+      });
+    
+      const { firstName, lastName, phone, address, mail, username, password } = inputs;
+
+      const onChange = (e) => {
+        setInputs({
+          ...inputs,
+          [e.target.name]: e.target.value,
+        });
+      };
+
+      const onSubmitForm = async (e) => {
+        //e.preventDefault();
+    
+        try {
+          const body = {
+            firstName, lastName, phone, address, mail, username, password
+          };
+    
+          const response = await fetch("http://localhost:8080/api/customer/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+
+          if (response.ok) {
+            toast.success("Your registration has been successful. You can access it from the login page !");
+          } else {
+            toast.error("Something is wrong !");
+          }
+    
+         // const parseRes = await response.json();
+    
+        //   if (parseRes.token) {
+        //     localStorage.setItem("token", parseRes.token);
+        //     setAuth(true);
+        //     toast.success("Kaydınız başarıyla tamamlandı.");
+        //   } else {
+        //     setAuth(false);
+    
+        //     toast.error(parseRes);
+        //   }
+
+        console.log(response);
+    
+          //
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+
     return (
         <>
             <Formik
                 initialValues={{
-                    firstname: '',
-                    lastname: '',
-                    email: '',
-                    company: '',
+                    firstName: '',
+                    lastName: '',
+                    phone: '',
+                    mail: '',
                     password: '',
+                    address: '',
+                    phone:'',
+                    username:'',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    firstname: Yup.string().max(255).required('First Name is required'),
-                    lastname: Yup.string().max(255).required('Last Name is required'),
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    firstName: Yup.string().max(255).required('First Name is required'),
+                    lastName: Yup.string().max(255).required('Last Name is required'),
+                    mail: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    password: Yup.string().max(255).required('Password is required'),
+                    address: Yup.string().max(255).required('Address is required'),
+                    phone: Yup.string().max(255).required('Phone is required'),
+                    username: Yup.string().max(255).required('Username is required'),
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                onSubmit={async (inputs, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        onSubmitForm();
                     } catch (err) {
                         console.error(err);
                         setStatus({ success: false });
@@ -86,43 +154,49 @@ const AuthRegister = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
+                                    <InputLabel htmlFor="firstName-signup">First Name*</InputLabel>
                                     <OutlinedInput
-                                        id="firstname-login"
-                                        type="firstname"
-                                        value={values.firstname}
-                                        name="firstname"
+                                        id="firstName-login"
+                                        type="firstName"
+                                        value={firstName}
+                                        name="firstName"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
                                         placeholder="John"
                                         fullWidth
-                                        error={Boolean(touched.firstname && errors.firstname)}
+                                        error={Boolean(touched.firstName && errors.firstName)}
                                     />
-                                    {touched.firstname && errors.firstname && (
-                                        <FormHelperText error id="helper-text-firstname-signup">
-                                            {errors.firstname}
+                                    {touched.firstName && errors.firstName && (
+                                        <FormHelperText error id="helper-text-firstName-signup">
+                                            {errors.firstName}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
+                                    <InputLabel htmlFor="lastName-signup">Last Name*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.lastname && errors.lastname)}
-                                        id="lastname-signup"
-                                        type="lastname"
-                                        value={values.lastname}
-                                        name="lastname"
+                                        error={Boolean(touched.lastName && errors.lastName)}
+                                        id="lastName-signup"
+                                        type="lastName"
+                                        value={lastName}
+                                        name="lastName"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
                                         placeholder="Doe"
                                         inputProps={{}}
                                     />
-                                    {touched.lastname && errors.lastname && (
-                                        <FormHelperText error id="helper-text-lastname-signup">
-                                            {errors.lastname}
+                                    {touched.lastName && errors.lastName && (
+                                        <FormHelperText error id="helper-text-lastName-signup">
+                                            {errors.lastName}
                                         </FormHelperText>
                                     )}
                                 </Stack>
@@ -150,35 +224,157 @@ const AuthRegister = () => {
                             </Grid> */}
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                                    <InputLabel htmlFor="mail-signup">Email Address*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
-                                        id="email-login"
-                                        type="email"
-                                        value={values.email}
-                                        name="email"
+                                        error={Boolean(touched.mail && errors.mail)}
+                                        id="mail-login"
+                                        type="mail"
+                                        value={mail}
+                                        name="mail"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
                                         placeholder="demo@company.com"
                                         inputProps={{}}
                                     />
-                                    {touched.email && errors.email && (
-                                        <FormHelperText error id="helper-text-email-signup">
-                                            {errors.email}
+                                    {touched.mail && errors.mail && (
+                                        <FormHelperText error id="helper-text-mail-signup">
+                                            {errors.mail}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
+                                    <InputLabel htmlFor="phone">Phone*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.phone && errors.phone)}
+                                        id="phone"
+                                        type="number"
+                                        value={phone}
+                                        name="phone"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
+                                        placeholder="12345678903"
+                                        inputProps={{}}
+                                    />
+                                    {touched.phone && errors.phone && (
+                                        <FormHelperText error id="helper-text-phone-signup">
+                                            {errors.phone}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="address">Address*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.address && errors.address)}
+                                        id="address"
+                                        type="text"
+                                        value={address}
+                                        name="address"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
+                                        placeholder="Demetevler"
+                                        inputProps={{}}
+                                    />
+                                    {touched.address && errors.address && (
+                                        <FormHelperText error id="helper-text-address-signup">
+                                            {errors.address}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="username">Username*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.username && errors.username)}
+                                        id="username"
+                                        type="text"
+                                        value={username}
+                                        name="username"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e)
+                                        }}
+                                        placeholder="Username"
+                                        inputProps={{}}
+                                    />
+                                    {touched.username && errors.username && (
+                                        <FormHelperText error id="helper-text-username-signup">
+                                            {errors.username}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="password">Password*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.password && errors.password)}
+                                        id="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        name="password"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            changePassword(e.target.value);
+                                            onChange(e)
+                                        }}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                    size="large"
+                                                >
+                                                    {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        placeholder="******"
+                                        inputProps={{}}
+                                    />
+                                    {touched.password && errors.password && (
+                                        <FormHelperText error id="helper-text-password-signup">
+                                            {errors.password}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                {/* <Stack spacing={1}>
                                     <InputLabel htmlFor="password-signup">Password</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
                                         id="password-signup"
                                         type={showPassword ? 'text' : 'password'}
-                                        value={values.password}
+                                        value={password}
                                         name="password"
                                         onBlur={handleBlur}
                                         onChange={(e) => {
@@ -206,7 +402,7 @@ const AuthRegister = () => {
                                             {errors.password}
                                         </FormHelperText>
                                     )}
-                                </Stack>
+                                </Stack> */}
                                 <FormControl fullWidth sx={{ mt: 2 }}>
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item>
@@ -252,18 +448,19 @@ const AuthRegister = () => {
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Divider>
                                     <Typography variant="caption">Sign up with</Typography>
                                 </Divider>
-                            </Grid>
-                            <Grid item xs={12}>
+                            </Grid> */}
+                            {/* <Grid item xs={12}>
                                 <FirebaseSocial />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </form>
                 )}
             </Formik>
+            <ToastContainer />
         </>
     );
 };
