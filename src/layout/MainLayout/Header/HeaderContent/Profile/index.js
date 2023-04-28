@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -54,11 +55,13 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
+    let navigate = useNavigate();
+
     const theme = useTheme();
 
     const handleLogout = async () => {
-        //TODO: LOGOUT İŞLEMLERİ BURAYA GELECEK
-        // logout
+        localStorage.removeItem("token");
+        navigate("/login");
     };
 
     const anchorRef = useRef(null);
@@ -98,8 +101,8 @@ const Profile = () => {
                 onClick={handleToggle}
             >
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-                    <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-                    <Typography variant="subtitle1">John Doe</Typography>
+                    {/* <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} /> */}
+                    <Typography variant="subtitle1">{localStorage.getItem("firstname") + " " + localStorage.getItem("lastname")}</Typography>
                 </Stack>
             </ButtonBase>
             <Popper
@@ -140,11 +143,13 @@ const Profile = () => {
                                             <Grid container justifyContent="space-between" alignItems="center">
                                                 <Grid item>
                                                     <Stack direction="row" spacing={1.25} alignItems="center">
-                                                        <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                                                        {/* <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} /> */}
                                                         <Stack>
-                                                            <Typography variant="h6">John Doe</Typography>
+                                                            <Typography variant="h6">{localStorage.getItem("firstname") + " " + localStorage.getItem("lastname")}</Typography>
                                                             <Typography variant="body2" color="textSecondary">
-                                                                UI/UX Designer
+                                                                {
+                                                                    localStorage.getItem("role") == "ROLE_USER" ? "Müşteri" : "Kullanıcı"
+                                                                }
                                                             </Typography>
                                                         </Stack>
                                                     </Stack>

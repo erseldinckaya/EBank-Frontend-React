@@ -1,5 +1,10 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import axios from '../../../../node_modules/axios/index';
 
 // material-ui
 import {
@@ -23,7 +28,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
+//import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
@@ -32,6 +37,21 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
+    let navigate = useNavigate();
+    const [login, isLogin] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem('token') !== null) {
+            navigate('/dashboard/default');
+        }
+    }, [login]);
+
+    useEffect(() => {
+        if (localStorage.getItem('token') !== null) {
+            navigate('/dashboard/default');
+        }
+    }, []);
+
     const [checked, setChecked] = React.useState(false);
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -43,22 +63,80 @@ const AuthLogin = () => {
         event.preventDefault();
     };
 
+    const [inputs, setInputs] = useState({
+        username: '',
+        password: ''
+    });
+
+    const { username, password } = inputs;
+
+    const onChange = (e) => {
+        setInputs({
+            ...inputs,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const onSubmitForm = async (e) => {
+        //e.preventDefault();
+
+        try {
+            const body = {
+                username,
+                password
+            };
+
+            const response = await fetch('http://localhost:8080/api/auth/authenticate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const parseRes = await response.text();
+
+            if (response.ok) {
+                toast.success('Welcome to EBank !');
+                localStorage.setItem('token', parseRes);
+                isLogin(true);
+
+               //Get user informations
+                axios.get(`http://localhost:8080/api/customer/getByUsername?username=${body.username}`).then((resp) => {
+                    const data = resp.data.data;
+                    localStorage.setItem('firstname', data.firstName);
+                    localStorage.setItem('lastname', data.lastName);
+                    localStorage.setItem('phone', data.phone);
+                    localStorage.setItem('address', data.address);
+                    localStorage.setItem('mail', data.mail);
+                    localStorage.setItem('creditpoint', data.creditPoint);
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('role', data.role);
+                });
+
+            } else {
+                toast.error('Something is wrong !');
+            }
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+
     return (
         <>
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    username: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    username: Yup.string().max(255).required('Username is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        onSubmitForm();
                     } catch (err) {
                         setStatus({ success: false });
                         setErrors({ submit: err.message });
@@ -71,37 +149,44 @@ const AuthLogin = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                                    <InputLabel htmlFor="username">Username*</InputLabel>
                                     <OutlinedInput
-                                        id="email-login"
-                                        type="email"
-                                        value={values.email}
-                                        name="email"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="Enter email address"
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
+                                        error={Boolean(touched.username && errors.username)}
+                                        id="username"
+                                        type="text"
+                                        value={username}
+                                        name="username"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e);
+                                        }}
+                                        placeholder="Username"
+                                        inputProps={{}}
                                     />
-                                    {touched.email && errors.email && (
-                                        <FormHelperText error id="standard-weight-helper-text-email-login">
-                                            {errors.email}
+                                    {touched.username && errors.username && (
+                                        <FormHelperText error id="helper-text-username-signup">
+                                            {errors.username}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-login">Password</InputLabel>
+                                    <InputLabel htmlFor="password">Password*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
-                                        id="-password-login"
+                                        id="password"
                                         type={showPassword ? 'text' : 'password'}
-                                        value={values.password}
+                                        value={password}
                                         name="password"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            onChange(e);
+                                        }}
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <IconButton
@@ -115,10 +200,11 @@ const AuthLogin = () => {
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        placeholder="Enter password"
+                                        placeholder="******"
+                                        inputProps={{}}
                                     />
                                     {touched.password && errors.password && (
-                                        <FormHelperText error id="standard-weight-helper-text-password-login">
+                                        <FormHelperText error id="helper-text-password-signup">
                                             {errors.password}
                                         </FormHelperText>
                                     )}
@@ -164,18 +250,19 @@ const AuthLogin = () => {
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Divider>
                                     <Typography variant="caption"> Login with</Typography>
                                 </Divider>
                             </Grid>
                             <Grid item xs={12}>
                                 <FirebaseSocial />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </form>
                 )}
             </Formik>
+            <ToastContainer />
         </>
     );
 };

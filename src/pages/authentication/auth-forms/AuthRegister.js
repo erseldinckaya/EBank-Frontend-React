@@ -62,9 +62,10 @@ const AuthRegister = () => {
         mail: "",
         username: "",
         password: "",
+        role: "ROLE_USER",
       });
     
-      const { firstName, lastName, phone, address, mail, username, password } = inputs;
+      const { firstName, lastName, phone, address, mail, username, password, role } = inputs;
 
       const onChange = (e) => {
         setInputs({
@@ -78,8 +79,9 @@ const AuthRegister = () => {
     
         try {
           const body = {
-            firstName, lastName, phone, address, mail, username, password
+            firstName, lastName, phone, address, mail, username, password, role
           };
+
     
           const response = await fetch("http://localhost:8080/api/customer/add", {
             method: "POST",
