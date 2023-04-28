@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-    Avatar,
     Box,
     ButtonBase,
     CardContent,
@@ -24,11 +23,10 @@ import {
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 import ProfileTab from './ProfileTab';
-import SettingTab from './SettingTab';
 
 // assets
-import avatar1 from 'assets/images/users/avatar-1.png';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+//import avatar1 from 'assets/images/users/avatar-1.png';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -60,8 +58,8 @@ const Profile = () => {
     const theme = useTheme();
 
     const handleLogout = async () => {
-        localStorage.removeItem("token");
-        navigate("/login");
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     const anchorRef = useRef(null);
@@ -102,7 +100,9 @@ const Profile = () => {
             >
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
                     {/* <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} /> */}
-                    <Typography variant="subtitle1">{localStorage.getItem("firstname") + " " + localStorage.getItem("lastname")}</Typography>
+                    <Typography variant="subtitle1">
+                        {localStorage.getItem('firstname') + ' ' + localStorage.getItem('lastname')}
+                    </Typography>
                 </Stack>
             </ButtonBase>
             <Popper
@@ -145,11 +145,11 @@ const Profile = () => {
                                                     <Stack direction="row" spacing={1.25} alignItems="center">
                                                         {/* <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} /> */}
                                                         <Stack>
-                                                            <Typography variant="h6">{localStorage.getItem("firstname") + " " + localStorage.getItem("lastname")}</Typography>
+                                                            <Typography variant="h6">
+                                                                {localStorage.getItem('firstname') + ' ' + localStorage.getItem('lastname')}
+                                                            </Typography>
                                                             <Typography variant="body2" color="textSecondary">
-                                                                {
-                                                                    localStorage.getItem("role") == "ROLE_USER" ? "Müşteri" : "Kullanıcı"
-                                                                }
+                                                                {localStorage.getItem('role') == 'ROLE_USER' ? 'Müşteri' : 'Kullanıcı'}
                                                             </Typography>
                                                         </Stack>
                                                     </Stack>

@@ -10,7 +10,6 @@ import axios from '../../../../node_modules/axios/index';
 import {
     Button,
     Checkbox,
-    Divider,
     FormControlLabel,
     FormHelperText,
     Grid,
@@ -44,12 +43,14 @@ const AuthLogin = () => {
         if (localStorage.getItem('token') !== null) {
             navigate('/dashboard/default');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [login]);
 
     useEffect(() => {
         if (localStorage.getItem('token') !== null) {
             navigate('/dashboard/default');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [checked, setChecked] = React.useState(false);
@@ -77,7 +78,7 @@ const AuthLogin = () => {
         });
     };
 
-    const onSubmitForm = async (e) => {
+    const onSubmitForm = async () => {
         //e.preventDefault();
 
         try {
@@ -99,9 +100,10 @@ const AuthLogin = () => {
                 localStorage.setItem('token', parseRes);
                 isLogin(true);
 
-               //Get user informations
+                //Get user informations
                 axios.get(`http://localhost:8080/api/customer/getByUsername?username=${body.username}`).then((resp) => {
                     const data = resp.data.data;
+                    localStorage.setItem('id', data.customerId);
                     localStorage.setItem('firstname', data.firstName);
                     localStorage.setItem('lastname', data.lastName);
                     localStorage.setItem('phone', data.phone);
@@ -111,7 +113,6 @@ const AuthLogin = () => {
                     localStorage.setItem('username', data.username);
                     localStorage.setItem('role', data.role);
                 });
-
             } else {
                 toast.error('Something is wrong !');
             }
@@ -144,7 +145,7 @@ const AuthLogin = () => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>

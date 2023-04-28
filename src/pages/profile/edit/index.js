@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from '../../../../node_modules/axios/index';
+//import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
-    Box,
     Button,
-    FormControl,
     FormHelperText,
     Grid,
-    Link,
-    IconButton,
-    InputAdornment,
     InputLabel,
     OutlinedInput,
     Stack,
@@ -27,33 +25,71 @@ import { Formik } from 'formik';
 
 // project import
 import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
+//import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+//import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import MainCard from 'components/MainCard';
 
 
 const ProfileEdit = () => {
-    const [level, setLevel] = useState();
-    const [showPassword, setShowPassword] = useState(false);
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
+
+    const [inputs, setInputs] = useState({
+        firstname: '',
+        lastName: '',
+        mail: '',
+        phone: '',
+        address: '',
+        username: ''
+    });
+
+    const { firstName, lastName, mail, phone, address, username } = inputs;
+
+    const onChange = (e) => {
+        setInputs({
+            ...inputs,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
+    const onSubmitForm = async () => {
+        //e.preventDefault();
+
+        try {
+
+            const body = {
+                customerId : `${localStorage.getItem("id")}`,
+                firstName,
+                lastName,
+                mail,
+                phone,
+                address,
+                username
+            };
+
+            axios.put("http://localhost:8080/api/customer/update", body).then((resp) => {
+                const data = resp.data;
+                if (data.status) {
+                    toast.success('Your profile is updated !');
+                    console.log("çalıştı");
+                } else {
+                    toast.error('Somethin is wrong !')
+                }
+            });
+
+        
+        } catch (err) {
+            console.error(err.message);
+        }
     };
 
-    const changePassword = (value) => {
-        const temp = strengthIndicator(value);
-        setLevel(strengthColor(temp));
-    };
 
-    useEffect(() => {
-        changePassword('');
-    }, []);
+
+
+
+
     return (
+        <>
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
             
             <Grid item xs={12} md={7} lg={12}>
@@ -63,23 +99,27 @@ const ProfileEdit = () => {
                 <MainCard sx={{ mt: 2 }} content={true}>
                 <Formik
                 initialValues={{
-                    firstname: '',
-                    lastname: '',
-                    email: '',
-                    company: '',
-                    password: '',
+                    firstName: `${localStorage.getItem("firstname")}`,
+                    lastname: `${localStorage.getItem("lastname")}`,
+                    mail: `${localStorage.getItem("mail")}`,
+                    phone: `${localStorage.getItem("phone")}`,
+                    address: `${localStorage.getItem("address")}`,
+                    username: `${localStorage.getItem("username")}`,
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    firstname: Yup.string().max(255).required('First Name is required'),
+                    firstName: Yup.string().max(255).required('First Name is required'),
                     lastname: Yup.string().max(255).required('Last Name is required'),
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    mail: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    phone: Yup.string().max(255).required('Phone is required'),
+                    address: Yup.string().max(255).required('Address is required'),
+                    username: Yup.string().max(255).required('Username is required'),
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                onSubmit={async ({ setErrors, setStatus, setSubmitting }) => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        onSubmitForm();
                     } catch (err) {
                         console.error(err);
                         setStatus({ success: false });
@@ -88,48 +128,54 @@ const ProfileEdit = () => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
+                                    <InputLabel htmlFor="firstName-signup">First Name*</InputLabel>
                                     <OutlinedInput
-                                        id="firstname-login"
-                                        type="firstname"
-                                        value={values.firstname}
-                                        name="firstname"
+                                        id="firstName-signup"
+                                        type="firstName"
+                                        value={firstName}
+                                        name="firstName"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
                                         placeholder="John"
                                         fullWidth
-                                        error={Boolean(touched.firstname && errors.firstname)}
+                                        error={Boolean(touched.firstName && errors.firstName)}
                                     />
-                                    {touched.firstname && errors.firstname && (
-                                        <FormHelperText error id="helper-text-firstname-signup">
-                                            {errors.firstname}
+                                    {touched.firstName && errors.firstName && (
+                                        <FormHelperText error id="helper-text-firstName-signup">
+                                            {errors.firstName}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
+                                    <InputLabel htmlFor="lastName-signup">Last Name*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.lastname && errors.lastname)}
-                                        id="lastname-signup"
-                                        type="lastname"
-                                        value={values.lastname}
-                                        name="lastname"
+                                        error={Boolean(touched.lastName && errors.lastName)}
+                                        id="lastName-signup"
+                                        type="lastName"
+                                        value={lastName}
+                                        name="lastName"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
                                         placeholder="Doe"
                                         inputProps={{}}
                                     />
-                                    {touched.lastname && errors.lastname && (
-                                        <FormHelperText error id="helper-text-lastname-signup">
-                                            {errors.lastname}
+                                    {touched.lastName && errors.lastName && (
+                                        <FormHelperText error id="helper-text-lastName-signup">
+                                            {errors.lastName}
                                         </FormHelperText>
                                     )}
                                 </Stack>
@@ -155,29 +201,110 @@ const ProfileEdit = () => {
                                     )}
                                 </Stack>
                             </Grid> */}
-                            <Grid item xs={12}>
+                            <Grid item xs={12} md={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                                    <InputLabel htmlFor="mail-signup">Email Address*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
-                                        id="email-login"
-                                        type="email"
-                                        value={values.email}
-                                        name="email"
+                                        error={Boolean(touched.mail && errors.mail)}
+                                        id="mail-login"
+                                        type="mail"
+                                        value={mail}
+                                        name="mail"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
                                         placeholder="demo@company.com"
                                         inputProps={{}}
                                     />
-                                    {touched.email && errors.email && (
-                                        <FormHelperText error id="helper-text-email-signup">
-                                            {errors.email}
+                                    {touched.mail && errors.mail && (
+                                        <FormHelperText error id="helper-text-mail-signup">
+                                            {errors.mail}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="phone">Phone*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.phone && errors.phone)}
+                                        id="phone"
+                                        type="text"
+                                        value={phone}
+                                        name="phone"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
+                                        placeholder="12345678907"
+                                        inputProps={{}}
+                                    />
+                                    {touched.phone && errors.phone && (
+                                        <FormHelperText error id="helper-text-phone-signup">
+                                            {errors.phone}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
                             <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="username-signup">Username*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.username && errors.username)}
+                                        id="username-signup"
+                                        type="username"
+                                        value={username}
+                                        name="username"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
+                                        placeholder="Doe"
+                                        inputProps={{}}
+                                    />
+                                    {touched.username && errors.username && (
+                                        <FormHelperText error id="helper-text-username-signup">
+                                            {errors.username}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="address">Address*</InputLabel>
+                                    <OutlinedInput
+                                        fullWidth
+                                        error={Boolean(touched.address && errors.address)}
+                                        id="address"
+                                        type="text"
+                                        value={address}
+                                        name="address"
+                                        onBlur={handleBlur}
+                                        onChange={(e) => {
+                                            handleChange;
+                                            onChange(e);
+                                        }}
+                                        placeholder="Demetevler"
+                                        inputProps={{}}
+                                    />
+                                    {touched.address && errors.address && (
+                                        <FormHelperText error id="helper-text-address-signup">
+                                            {errors.address}
+                                        </FormHelperText>
+                                    )}
+                                </Stack>
+                            </Grid>
+                            {/* <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="password-signup">Password</InputLabel>
                                     <OutlinedInput
@@ -226,7 +353,7 @@ const ProfileEdit = () => {
                                         </Grid>
                                     </Grid>
                                 </FormControl>
-                            </Grid>
+                            </Grid> */}
                            
                             {errors.submit && (
                                 <Grid item xs={12}>
@@ -259,9 +386,11 @@ const ProfileEdit = () => {
           
 
             <Helmet>
-                <title>E-Bank ✦ Debit Card ✦</title>
+                <title>E-Bank ✦ Edit Profil ✦</title>
             </Helmet>
         </Grid>
+        <ToastContainer />
+        </>
     );
 };
 
