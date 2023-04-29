@@ -1,4 +1,5 @@
-
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 //helmet
 import { Helmet } from 'react-helmet';
@@ -14,6 +15,12 @@ import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
+    let navigate = useNavigate();
+    useEffect(() => {
+        if(localStorage.getItem("token") == null){
+            navigate("/login");
+        }
+    }, [])
     return (
         <>
             <Grid container rowSpacing={4.5} columnSpacing={2.75}>

@@ -6,7 +6,7 @@ import { CardActionArea } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 
-function Creditcard() {
+function Creditcard(props) {
   
 
   return (
@@ -18,13 +18,14 @@ function Creditcard() {
               Current Balance
             </Typography> */}
 
-            <Typography sx={{ mt: 1 }} variant="h5">
-              $28.000
+            <Typography sx={{ mt: 1 }} variant="h4">
+              {"$ " + props.balance}
             </Typography>
 
-            <Typography style={{flex:1}} sx={{ mt: 5 }} variant="body">
-              Ersel Dinçkaya
+            <Typography style={{flex:1, fontWeight:"bold"}} sx={{ mt: 5 }} variant="p">
+              {props.firstname + " " + props.lastname}
             </Typography>
+
 
             <Grid container xs={12} sx={{ mt: 8 }}>
               <Grid container xs={12} justifyContent="space-between">
@@ -45,7 +46,7 @@ function Creditcard() {
                   </svg>
                 </Typography>
                 <Typography inline align="right">
-                  **** **** **** 7529
+                  {props.number}
                 </Typography>
               </Grid>
             </Grid>
