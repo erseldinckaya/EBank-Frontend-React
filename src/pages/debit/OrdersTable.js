@@ -147,7 +147,7 @@ OrderStatus.propTypes = {
 
 // ==============================|| ORDER TABLE ||============================== //
 
-export default function OrderTable() {
+export default function OrderTable(props) {
     const [order] = useState('asc');
     const [orderBy] = useState('trackingNo');
     const [selected] = useState([]);

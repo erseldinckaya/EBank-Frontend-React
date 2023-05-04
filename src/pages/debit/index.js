@@ -2,6 +2,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from '../../../node_modules/axios/index';
+import { Table, Tag } from 'antd';
 
 import Carousel from 'react-material-ui-carousel';
 
@@ -12,9 +13,10 @@ import { Grid, Typography, Button, Stack } from '@mui/material';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import Creditcard from 'components/BankCards/CreditCard';
 import MainCard from 'components/MainCard';
-import OrdersTable from './OrdersTable';
+
 
 const DebitDefault = () => {
+    const { Column } = Table;
 
     //List Cards
 
@@ -30,6 +32,27 @@ const DebitDefault = () => {
         }
     }, []);
 
+    //State
+    const [accountId, setAccountId] = useState();
+    const [transactions, setTransactions] = useState([]);
+    const [destTransactions, setdestTransactions] = useState([]);
+
+    useEffect(() => {
+        try {
+            axios.get(`http://localhost:8080/api/accounts/transaction/getByAccountId?id=${accountId}`).then((resp) => {
+                console.log(resp);
+                setTransactions(resp.data);
+            });
+
+            // axios.get(`http://localhost:8080/api/accounts/transaction/getByDestinationId?id=${accountId}`).then((resp) => {
+            //     //console.log(resp);
+            //     setdestTransactions(resp.data);
+            // });
+        } catch (error) {
+            console.error(err.message);
+        }
+    }, [accountId]);
+
     return (
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
             <Grid item xs={12} sx={{ mb: -2.25 }}>
@@ -37,17 +60,16 @@ const DebitDefault = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Carousel cycleNavigation={false} autoPlay={false}>
-                    {
-                        cards.map((item) => (
-                            <Creditcard 
+                    {cards.map((item) => (
+                        <Creditcard
+                            id={item.accountId}
                             firstname={item.customer.firstName}
                             lastname={item.customer.lastName}
                             balance={item.balance}
                             number={item.cardNumber}
-                            />
-                        ))
-                    }
-
+                            setAccountId={setAccountId}
+                        />
+                    ))}
                 </Carousel>
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -68,10 +90,28 @@ const DebitDefault = () => {
                     <Grid item />
                 </Grid>
                 <MainCard sx={{ mt: 2 }} content={false}>
-                    <OrdersTable />
+                    <Table dataSource={transactions}>
+                        <Column title="Transaction No" dataIndex="transactionId" key="transactionId" />
+                        <Column title="Name" dataIndex="transactionName" key="transactionName" />
+                        <Column title="Date" dataIndex="transactionDate" key="transactionDate" />
+                        <Column
+                            title="Type"
+                            render={(_, record) => {
+                                if (record.typeId.typeId == 1) {
+                                    return(
+                                        <Tag color="success">+</Tag>
+                                    );
+                                } else {
+                                    return(
+                                        <Tag color="error">-</Tag>
+                                    );
+                                }
+                            }}
+                        />
+                        <Column title="Amount" dataIndex="amount" key="amount" />
+                    </Table>
                 </MainCard>
             </Grid>
-
 
             <Helmet>
                 <title>E-Bank ✦ Debit Card ✦</title>

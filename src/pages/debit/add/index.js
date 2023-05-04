@@ -20,7 +20,7 @@ import { Helmet } from 'react-helmet';
 import MainCard from 'components/MainCard';
 
 const DebitAdd = () => {
-    const { Column, ColumnGroup } = Table;
+    const { Column } = Table;
     let navigate = useNavigate();
 
     //Create Card
