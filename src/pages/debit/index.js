@@ -35,7 +35,7 @@ const DebitDefault = () => {
     //State
     const [accountId, setAccountId] = useState();
     const [transactions, setTransactions] = useState([]);
-    const [destTransactions, setdestTransactions] = useState([]);
+  
 
     useEffect(() => {
         try {
@@ -44,14 +44,15 @@ const DebitDefault = () => {
                 setTransactions(resp.data);
             });
 
-            // axios.get(`http://localhost:8080/api/accounts/transaction/getByDestinationId?id=${accountId}`).then((resp) => {
-            //     //console.log(resp);
-            //     setdestTransactions(resp.data);
-            // });
+           
         } catch (error) {
             console.error(err.message);
         }
     }, [accountId]);
+
+
+    //For sorting
+    const numDescending = [...transactions].sort((a, b) => b.transactionId - a.transactionId);
 
     return (
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -90,7 +91,7 @@ const DebitDefault = () => {
                     <Grid item />
                 </Grid>
                 <MainCard sx={{ mt: 2 }} content={false}>
-                    <Table dataSource={transactions}>
+                    <Table dataSource={numDescending}>
                         <Column title="Transaction No" dataIndex="transactionId" key="transactionId" />
                         <Column title="Name" dataIndex="transactionName" key="transactionName" />
                         <Column title="Date" dataIndex="transactionDate" key="transactionDate" />
