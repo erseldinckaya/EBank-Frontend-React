@@ -24,6 +24,10 @@ const DebitUse = () => {
     const [cards, setCards] = useState([]);
     const [selectedCard, setselectedCard] = useState([]);
     const [reCard, setRecard] = useState(0);
+    const [values, setValues] = useState([]);
+     // Select Card
+
+     const [id, setAccountId] = useState(0);
     
 
     useEffect(() => {
@@ -36,15 +40,21 @@ const DebitUse = () => {
         }
     }, [reCard]);
 
-    // Select Card
-
-    const [id, setAccountId] = useState(0);
+   
 
    
 
     useEffect(() => {
         toast.success('Debit Card is selected !');
     }, [id]);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/cardvalue/getById?id=${id}`).then((resp) => {
+            setValues(resp.data);
+        });
+    }, [id,reCard]);
+
+    
 
    
 
@@ -158,13 +168,13 @@ const DebitUse = () => {
                     </Carousel>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AnalyticEcommerce title="Balance" count="$3000" percentage={27.4} extra="character" />
+                    <AnalyticEcommerce title="Balance" count={"$" + values.balance} percentage={27.4} isLoss={!values.status} extra="character" />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AnalyticEcommerce title="Incomes" count="$5000" percentage={70.5} color="success" extra="character" />
+                    <AnalyticEcommerce title="Incomes" count={"$" + values.incomes} percentage={70.5} color="success" extra="character" />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AnalyticEcommerce title="Expense" count="$2000" percentage={27.4} isLoss color="error" extra="character" />
+                    <AnalyticEcommerce title="Expense" count={"$" + values.expenses} percentage={27.4} isLoss color="error" extra="character" />
                 </Grid>
 
                 <Grid item xs={12} md={7} lg={12}>

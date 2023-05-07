@@ -23,7 +23,7 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
                         {count}
                     </Typography>
                 </Grid>
-                {percentage && (
+                {(
                     <Grid item>
                         <Chip
                             variant="combined"
@@ -34,7 +34,7 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
                                     {isLoss && <FallOutlined style={{ fontSize: '0.75rem', color: 'inherit' }} />}
                                 </>
                             }
-                            label={`${percentage}%`}
+                            //label={`${percentage}%`}
                             sx={{ ml: 1.25, pl: 1 }}
                             size="small"
                         />
