@@ -16,8 +16,8 @@ import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
 const DashboardDefault = () => {
     const { Column } = Table;
-
     let navigate = useNavigate();
+    
     useEffect(() => {
         if (localStorage.getItem('token') == null) {
             navigate('/login');
@@ -73,7 +73,7 @@ const DashboardDefault = () => {
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <AnalyticEcommerce title="Debit" count="$35,078" percentage={27.4} isLoss color="warning" extra="character" />
+                    <AnalyticEcommerce title="Debit" count="$0" percentage={27.4} isLoss color="warning" extra="character" />
                 </Grid>
 
                 <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />

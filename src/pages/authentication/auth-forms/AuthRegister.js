@@ -72,7 +72,7 @@ const AuthRegister = () => {
         });
     };
 
-    const onSubmitForm = async (e) => {
+    const onSubmitForm = async () => {
         //e.preventDefault();
 
         try {
@@ -99,19 +99,6 @@ const AuthRegister = () => {
                 toast.error('Something is wrong !');
             }
 
-            // const parseRes = await response.json();
-
-            //   if (parseRes.token) {
-            //     localStorage.setItem("token", parseRes.token);
-            //     setAuth(true);
-            //     toast.success("Kaydınız başarıyla tamamlandı.");
-            //   } else {
-            //     setAuth(false);
-
-            //     toast.error(parseRes);
-            //   }
-
-            console.log(response);
 
             //
         } catch (err) {
@@ -155,7 +142,7 @@ const AuthRegister = () => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
@@ -207,27 +194,7 @@ const AuthRegister = () => {
                                     )}
                                 </Stack>
                             </Grid>
-                            {/* <Grid item xs={12}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">Company</InputLabel>
-                                    <OutlinedInput
-                                        fullWidth
-                                        error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="Demo Inc."
-                                        inputProps={{}}
-                                    />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
-                                            {errors.company}
-                                        </FormHelperText>
-                                    )}
-                                </Stack>
-                            </Grid> */}
+                           
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="mail-signup">Email Address*</InputLabel>
@@ -373,42 +340,7 @@ const AuthRegister = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                {/* <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-signup">Password</InputLabel>
-                                    <OutlinedInput
-                                        fullWidth
-                                        error={Boolean(touched.password && errors.password)}
-                                        id="password-signup"
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={password}
-                                        name="password"
-                                        onBlur={handleBlur}
-                                        onChange={(e) => {
-                                            handleChange(e);
-                                            changePassword(e.target.value);
-                                        }}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                    edge="end"
-                                                    size="large"
-                                                >
-                                                    {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                        placeholder="******"
-                                        inputProps={{}}
-                                    />
-                                    {touched.password && errors.password && (
-                                        <FormHelperText error id="helper-text-password-signup">
-                                            {errors.password}
-                                        </FormHelperText>
-                                    )}
-                                </Stack> */}
+                             
                                 <FormControl fullWidth sx={{ mt: 2 }}>
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item>
@@ -454,14 +386,7 @@ const AuthRegister = () => {
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            {/* <Grid item xs={12}>
-                                <Divider>
-                                    <Typography variant="caption">Sign up with</Typography>
-                                </Divider>
-                            </Grid> */}
-                            {/* <Grid item xs={12}>
-                                <FirebaseSocial />
-                            </Grid> */}
+                          
                         </Grid>
                     </form>
                 )}

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from '../../../node_modules/axios/index';
 import { Table, Tag } from 'antd';
-
+import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 
 //helmet
@@ -15,7 +15,7 @@ import MainCard from 'components/MainCard';
 
 const DebitDefault = () => {
     const { Column } = Table;
-
+    let navigate = useNavigate();
     //List Cards
 
     const [cards, setCards] = useState([]);
@@ -37,13 +37,16 @@ const DebitDefault = () => {
     useEffect(() => {
         try {
             axios.get(`http://localhost:8080/api/accounts/transaction/getByAccountId?id=${accountId}`).then((resp) => {
-                console.log(resp);
                 setTransactions(resp.data);
             });
         } catch (error) {
             console.error(err.message);
         }
     }, [accountId]);
+
+    if(cards.length == 0){
+        navigate('/debit/appeal');
+    }
 
     //For sorting
     const numDescending = [...transactions].sort((a, b) => b.transactionId - a.transactionId);

@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import { Table, Tag } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,7 +22,7 @@ import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
 const DebitUse = () => {
     const { Column } = Table;
-
+    let navigate = useNavigate();
     //List Cards
 
     const [cards, setCards] = useState([]);
@@ -159,7 +160,7 @@ const DebitUse = () => {
         });
     };
 
-    const onSubmitForm = async (e) => {
+    const onSubmitForm = async () => {
         //e.preventDefault();
 
         try {
@@ -199,6 +200,12 @@ const DebitUse = () => {
         }
     };
 
+
+    if(cards.length == 0){
+        navigate('/debit/appeal');
+    }
+
+    
     return (
         <>
             <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -315,7 +322,7 @@ const DebitUse = () => {
                                 }
                             }}
                         >
-                            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                            {({ errors, handleBlur, handleChange, handleSubmit, touched }) => (
                                 <form noValidate onSubmit={handleSubmit}>
                                     <Grid container spacing={3}>
                                         <Grid item xs={12} md={6}>
