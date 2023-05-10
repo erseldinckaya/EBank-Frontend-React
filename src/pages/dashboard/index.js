@@ -9,7 +9,6 @@ import { Helmet } from 'react-helmet';
 import { Grid, Typography } from '@mui/material';
 
 // project import
-import OrdersTable from './OrdersTable';
 import MainCard from 'components/MainCard';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
@@ -34,15 +33,16 @@ const DashboardDefault = () => {
             console.log(resp.data);
         });
 
-
-        axios.get(`http://localhost:8080/api/accounts/transaction/getByCustomerId?customerId=${localStorage.getItem('id')}`).then((resp) => {
-            console.log(resp);
-            setTransactions(resp.data);
-        });
+        axios
+            .get(`http://localhost:8080/api/accounts/transaction/getByCustomerId?customerId=${localStorage.getItem('id')}`)
+            .then((resp) => {
+                console.log(resp);
+                setTransactions(resp.data);
+            });
     }, []);
 
-     //For sorting
-     const numDescending = [...transactions].sort((a, b) => b.transactionId - a.transactionId);
+    //For sorting
+    const numDescending = [...transactions].sort((a, b) => b.transactionId - a.transactionId);
     return (
         <>
             <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -87,26 +87,22 @@ const DashboardDefault = () => {
                         <Grid item />
                     </Grid>
                     <MainCard sx={{ mt: 2 }} content={false}>
-                    <Table dataSource={numDescending}>
-                        <Column title="Transaction No" dataIndex="transactionId" key="transactionId" />
-                        <Column title="Name" dataIndex="transactionName" key="transactionName" />
-                        <Column title="Date" dataIndex="transactionDate" key="transactionDate" />
-                        <Column
-                            title="Type"
-                            render={(_, record) => {
-                                if (record.typeId.typeId == 1) {
-                                    return(
-                                        <Tag color="success">+</Tag>
-                                    );
-                                } else {
-                                    return(
-                                        <Tag color="error">-</Tag>
-                                    );
-                                }
-                            }}
-                        />
-                        <Column title="Amount" dataIndex="amount" key="amount" />
-                    </Table>
+                        <Table dataSource={numDescending}>
+                            <Column title="Transaction No" dataIndex="transactionId" key="transactionId" />
+                            <Column title="Name" dataIndex="transactionName" key="transactionName" />
+                            <Column title="Date" dataIndex="transactionDate" key="transactionDate" />
+                            <Column
+                                title="Type"
+                                render={(_, record) => {
+                                    if (record.typeId.typeId == 1) {
+                                        return <Tag color="success">+</Tag>;
+                                    } else {
+                                        return <Tag color="error">-</Tag>;
+                                    }
+                                }}
+                            />
+                            <Column title="Amount" dataIndex="amount" key="amount" />
+                        </Table>
                     </MainCard>
                 </Grid>
 

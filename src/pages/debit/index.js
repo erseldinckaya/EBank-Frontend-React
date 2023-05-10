@@ -1,5 +1,4 @@
 // eslint-disable-next-line
-import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from '../../../node_modules/axios/index';
 import { Table, Tag } from 'antd';
@@ -9,11 +8,10 @@ import Carousel from 'react-material-ui-carousel';
 //helmet
 import { Helmet } from 'react-helmet';
 
-import { Grid, Typography, Button, Stack } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import Creditcard from 'components/BankCards/CreditCard';
 import MainCard from 'components/MainCard';
-
 
 const DebitDefault = () => {
     const { Column } = Table;
@@ -35,7 +33,6 @@ const DebitDefault = () => {
     //State
     const [accountId, setAccountId] = useState();
     const [transactions, setTransactions] = useState([]);
-  
 
     useEffect(() => {
         try {
@@ -43,13 +40,10 @@ const DebitDefault = () => {
                 console.log(resp);
                 setTransactions(resp.data);
             });
-
-           
         } catch (error) {
             console.error(err.message);
         }
     }, [accountId]);
-
 
     //For sorting
     const numDescending = [...transactions].sort((a, b) => b.transactionId - a.transactionId);
@@ -99,13 +93,9 @@ const DebitDefault = () => {
                             title="Type"
                             render={(_, record) => {
                                 if (record.typeId.typeId == 1) {
-                                    return(
-                                        <Tag color="success">+</Tag>
-                                    );
+                                    return <Tag color="success">+</Tag>;
                                 } else {
-                                    return(
-                                        <Tag color="error">-</Tag>
-                                    );
+                                    return <Tag color="error">-</Tag>;
                                 }
                             }}
                         />

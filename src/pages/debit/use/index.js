@@ -1,24 +1,23 @@
 // eslint-disable-next-line
-import React from 'react';
-import { useEffect, useState } from 'react';
-import axios from '../../../../node_modules/axios/index';
 import { Table, Tag } from 'antd';
-import { toast, ToastContainer } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from '../../../../node_modules/axios/index';
 
 import Carousel from 'react-material-ui-carousel';
 
-import * as Yup from 'yup';
-import { Formik } from 'formik';
 import AnimateButton from 'components/@extended/AnimateButton';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 //helmet
 import { Helmet } from 'react-helmet';
 
-import { Grid, Typography, Button, Stack, InputLabel, OutlinedInput, FormControl, Box, FormHelperText } from '@mui/material';
-import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
+import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material';
 import Creditcard from 'components/BankCards/CreditCard';
 import MainCard from 'components/MainCard';
+import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
 const DebitUse = () => {
     const { Column } = Table;
@@ -142,7 +141,7 @@ const DebitUse = () => {
 
     const [cardNo, setcardNo] = useState(0);
     const [inputs, setInputs] = useState({
-        transactionName:'',
+        transactionName: '',
         cardNumber: '',
         amount: '',
         type: {
@@ -162,17 +161,22 @@ const DebitUse = () => {
 
     const onSubmitForm = async (e) => {
         //e.preventDefault();
-    
+
         try {
-            const no = cardNumber.substring(0,4) + "%20" + cardNumber.substring(4,8) + "%20" + cardNumber.substring(8,12) + "%20" + cardNumber.substring(12,16);
-            
+            const no =
+                cardNumber.substring(0, 4) +
+                '%20' +
+                cardNumber.substring(4, 8) +
+                '%20' +
+                cardNumber.substring(8, 12) +
+                '%20' +
+                cardNumber.substring(12, 16);
 
             await axios.get(`http://localhost:8080/api/accounts/debit/getDebitAccountByCardNumber?cardNumber=${no}`).then((resp) => {
                 setcardNo(resp.data);
             });
 
             setselectedCard(cards.filter((item) => item.accountId == id));
-
 
             const body = {
                 destinationId: cardNo.accountId,
@@ -182,8 +186,6 @@ const DebitUse = () => {
                 typeId: type
             };
 
-            
-
             await axios.post('http://localhost:8080/api/accounts/transaction/add', body).then((resp) => {
                 if (resp.data.status) {
                     toast.success('Process is success !');
@@ -192,12 +194,10 @@ const DebitUse = () => {
                 }
                 setRecard(reCard + 1);
             });
-
-
         } catch (err) {
-          console.error(err.message);
+            console.error(err.message);
         }
-      };
+    };
 
     return (
         <>

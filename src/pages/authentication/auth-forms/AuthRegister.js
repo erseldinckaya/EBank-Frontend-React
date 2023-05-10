@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {toast, ToastContainer} from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // material-ui
 import {
     Box,
     Button,
-    Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -25,7 +24,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
@@ -55,65 +53,71 @@ const AuthRegister = () => {
     }, []);
 
     const [inputs, setInputs] = useState({
-        firstName: "",
-        lastName: "",
-        phone: "",
-        address: "",
-        mail: "",
-        username: "",
-        password: "",
-        role: "ROLE_USER",
-      });
-    
-      const { firstName, lastName, phone, address, mail, username, password, role } = inputs;
+        firstName: '',
+        lastName: '',
+        phone: '',
+        address: '',
+        mail: '',
+        username: '',
+        password: '',
+        role: 'ROLE_USER'
+    });
 
-      const onChange = (e) => {
+    const { firstName, lastName, phone, address, mail, username, password, role } = inputs;
+
+    const onChange = (e) => {
         setInputs({
-          ...inputs,
-          [e.target.name]: e.target.value,
+            ...inputs,
+            [e.target.name]: e.target.value
         });
-      };
+    };
 
-      const onSubmitForm = async (e) => {
+    const onSubmitForm = async (e) => {
         //e.preventDefault();
-    
+
         try {
-          const body = {
-            firstName, lastName, phone, address, mail, username, password, role
-          };
+            const body = {
+                firstName,
+                lastName,
+                phone,
+                address,
+                mail,
+                username,
+                password,
+                role
+            };
 
-    
-          const response = await fetch("http://localhost:8080/api/customer/add", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-          });
+            const response = await fetch('http://localhost:8080/api/customer/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
 
-          if (response.ok) {
-            toast.success("Your registration has been successful. You can access it from the login page !");
-          } else {
-            toast.error("Something is wrong !");
-          }
-    
-         // const parseRes = await response.json();
-    
-        //   if (parseRes.token) {
-        //     localStorage.setItem("token", parseRes.token);
-        //     setAuth(true);
-        //     toast.success("Kaydınız başarıyla tamamlandı.");
-        //   } else {
-        //     setAuth(false);
-    
-        //     toast.error(parseRes);
-        //   }
+            if (response.ok) {
+                toast.success('Your registration has been successful. You can access it from the login page !');
+            } else {
+                toast.error('Something is wrong !');
+            }
 
-        console.log(response);
-    
-          //
+            // const parseRes = await response.json();
+
+            //   if (parseRes.token) {
+            //     localStorage.setItem("token", parseRes.token);
+            //     setAuth(true);
+            //     toast.success("Kaydınız başarıyla tamamlandı.");
+            //   } else {
+            //     setAuth(false);
+
+            //     toast.error(parseRes);
+            //   }
+
+            console.log(response);
+
+            //
         } catch (err) {
-          console.error(err.message);
+            console.error(err.message);
         }
-      };
+    };
 
     return (
         <>
@@ -125,8 +129,8 @@ const AuthRegister = () => {
                     mail: '',
                     password: '',
                     address: '',
-                    phone:'',
-                    username:'',
+                    phone: '',
+                    username: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -136,7 +140,7 @@ const AuthRegister = () => {
                     password: Yup.string().max(255).required('Password is required'),
                     address: Yup.string().max(255).required('Address is required'),
                     phone: Yup.string().max(255).required('Phone is required'),
-                    username: Yup.string().max(255).required('Username is required'),
+                    username: Yup.string().max(255).required('Username is required')
                 })}
                 onSubmit={async (inputs, { setErrors, setStatus, setSubmitting }) => {
                     try {
@@ -165,7 +169,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="John"
                                         fullWidth
@@ -191,7 +195,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="Doe"
                                         inputProps={{}}
@@ -237,7 +241,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="demo@company.com"
                                         inputProps={{}}
@@ -263,7 +267,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="12345678903"
                                         inputProps={{}}
@@ -289,7 +293,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="Demetevler"
                                         inputProps={{}}
@@ -315,7 +319,7 @@ const AuthRegister = () => {
                                         onBlur={handleBlur}
                                         onChange={(e) => {
                                             handleChange(e);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         placeholder="Username"
                                         inputProps={{}}
@@ -342,7 +346,7 @@ const AuthRegister = () => {
                                         onChange={(e) => {
                                             handleChange(e);
                                             changePassword(e.target.value);
-                                            onChange(e)
+                                            onChange(e);
                                         }}
                                         endAdornment={
                                             <InputAdornment position="end">
